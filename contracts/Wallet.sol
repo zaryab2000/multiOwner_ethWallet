@@ -35,6 +35,32 @@ contract Wallet{
 		requiredVote = _requiredVote;	
 	}
 
+	event RequestCreated(address indexed _owner,address indexed _receiver, uint256 _value, uint indexed transactionIndex);
+	
+
+	modifier ownerOnly(){ 
+		require(checkOwnership[msg.sender],"Caller is NOT the Owner"); 
+		_; 
+	}
+	
+
+	function createRequest(uint256 _value, address _rec, string memory _reason) public ownerOnly{
+		uint transactionIndex = transactionReqs.length;
+
+		transactionReqs.push(TxnRequest({
+			value : _value,
+			votesReceived : 0,
+			requestBy : msg.sender,
+			recipient : _rec,
+			isExecuted : false,
+			reason : _reason
+			}));
+
+		emit RequestCreated(msg.sender, _rec, _value, transactionIndex);
+	}
+	
+
+
 
 	
 }
